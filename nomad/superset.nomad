@@ -30,7 +30,7 @@ job "superset" {
   type        = "service"
 # Create a database that will be a metastore in this case we use postgressql
 
-  group "postgresdb" {
+  group "metastore" {
 # We would like only 1 database running in this setup
     count = 1
     service {
@@ -164,7 +164,7 @@ count = 1
   }
 
 # This group creates the gunicorn webservers 
-  group "webserver" {
+  group "webservers" {
 # Increase the count to scale up as load increases 
     count = 1
     network {
@@ -226,7 +226,7 @@ count = 1
     }
   }
 # This group sets up one celery scheduler that does the scheduling of the tasks for celery workers
-  group "celerybeat" {
+  group "scheduler" {
 # We want only one scheduler to run in the whole setup
       count = 1
     network {
@@ -281,7 +281,7 @@ count = 1
 
 # This group creates celery workers that take tasks like report generation, sql lab queries queued in
 # redis by celery scheduler 
-  group "celeryworker" {
+  group "workers" {
 # Increase the count to scale up as load increases 
     count = 1
     network {
